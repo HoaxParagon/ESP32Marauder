@@ -11,7 +11,7 @@
   //#define MARAUDER_MINI
   //#define MARAUDER_V4
   //#define MARAUDER_V6
-  #define MARAUDER_V6_1
+  //#define MARAUDER_V6_1
   //#define MARAUDER_V7
   //#define MARAUDER_KIT
   //#define GENERIC_ESP32
@@ -20,9 +20,10 @@
   //#define MARAUDER_DEV_BOARD_PRO
   //#define XIAO_ESP32_S3
   //#define MARAUDER_REV_FEATHER
+  #define MARAUDER_TDISPLAY_S3_PRO
   //// END BOARD TARGETS
 
-  #define MARAUDER_VERSION "v1.2.0"
+  #define MARAUDER_VERSION "v1.2.1"
 
   //// HARDWARE NAMES
   #ifdef MARAUDER_M5STICKC
@@ -49,6 +50,8 @@
     #define HARDWARE_NAME "Flipper Zero Dev Board Pro"
   #elif defined(XIAO_ESP32_S3)
     #define HARDWARE_NAME "XIAO ESP32 S3"
+  #elif defined(MARAUDER_TDISPLAY_S3_PRO)
+    #define HARDWARE_NAME "Marauder Tdisplay S3 Pro"
   #else
     #define HARDWARE_NAME "ESP32"
   #endif
@@ -230,6 +233,19 @@
     //#define HAS_TEMP_SENSOR
     //#define HAS_GPS
   #endif
+
+  #ifdef MARAUDER_TDISPLAY_S3_PRO
+    //#define FLIPPER_ZERO_HAT
+    #define HAS_BATTERY
+    #define HAS_BT
+    #define HAS_BUTTONS
+    //#define HAS_NEOPIXEL_LED
+    #define HAS_PWR_MGMT
+    #define HAS_SCREEN
+    #define HAS_SD
+    //#define HAS_TEMP_SENSOR
+    //#define HAS_GPS
+  #endif
   //// END BOARD FEATURES
 
   //// POWER MANAGEMENT
@@ -237,6 +253,10 @@
     #ifdef MARAUDER_M5STICKC
       #include "AXP192.h"
     #endif
+
+    #ifdef MARAUDER_TDISPLAY_S3_PRO
+      #include <XPowersLib.h>
+      #include "utilities.h" //might not be required if pins are defined elsewhere
   #endif
   //// END POWER MANAGEMENT
 
@@ -362,6 +382,25 @@
       #define R_PULL true
       #define D_PULL true
     #endif  
+
+    #ifdef MARAUDER_TDISPLAY_S3_PRO
+      #define L_BTN -1
+      #define C_BTN 0
+      #define U_BTN 12
+      #define R_BTN -1
+      #define D_BTN 16
+
+      //#define HAS_L
+      //#define HAS_R
+      #define HAS_U
+      #define HAS_D
+      #define HAS_C
+
+      #define L_PULL false
+      #define C_PULL true //all left true for now until board comes
+      #define U_PULL true
+      #define R_PULL false
+      #define D_PULL true
 
   #endif
   //// END BUTTON DEFINITIONS
@@ -808,6 +847,76 @@
       #define STATUSBAR_COLOR 0x4A49
     #endif
 
+
+    //start t-display pro
+    #ifdef MARAUDER_TDISPLAY_S3_PRO
+      #define SCREEN_CHAR_WIDTH 40
+
+      #define TFT_MISO 8
+      #define TFT_MOSI 17
+      #define TFT_SCLK 18
+      #define TFT_CS 39
+      #define TFT_DC 9
+      #define TFT_RST 47
+      #define TFT_BL 48
+      #define TOUCH_CS 21
+      #define SD_CS 14
+      //#define HAS_ILI9341 //change this
+      
+      #define BANNER_TEXT_SIZE 2
+
+      #ifndef TFT_WIDTH
+        #define TFT_WIDTH 222
+      #endif
+
+      #ifndef TFT_HEIGHT
+        #define TFT_HEIGHT 480 //changed
+      #endif
+
+      #define TFT_SHIELD
+    
+      #define SCREEN_WIDTH TFT_WIDTH
+      #define SCREEN_HEIGHT TFT_HEIGHT
+      #define HEIGHT_1 TFT_WIDTH
+      #define WIDTH_1 TFT_HEIGHT
+      #define STANDARD_FONT_CHAR_LIMIT (TFT_WIDTH/6) // number of characters on a single line with normal font
+      #define TEXT_HEIGHT 16 // Height of text to be printed and scrolled
+      #define BOT_FIXED_AREA 0 // Number of lines in bottom fixed area (lines counted from bottom of screen)
+      #define TOP_FIXED_AREA 48 // Number of lines in top fixed area (lines counted from top of screen)
+      #define YMAX 480 // Bottom of screen area
+      #define minimum(a,b)     (((a) < (b)) ? (a) : (b))
+      //#define MENU_FONT NULL
+      #define MENU_FONT &FreeMono9pt7b // Winner
+      //#define MENU_FONT &FreeMonoBold9pt7b
+      //#define MENU_FONT &FreeSans9pt7b
+      //#define MENU_FONT &FreeSansBold9pt7b
+      #define BUTTON_SCREEN_LIMIT 12 //todo: change these values
+      #define BUTTON_ARRAY_LEN 12
+      #define STATUS_BAR_WIDTH 16
+      #define LVGL_TICK_PERIOD 6
+    
+      #define FRAME_X 100
+      #define FRAME_Y 64
+      #define FRAME_W 120
+      #define FRAME_H 50
+    
+      // Red zone size
+      #define REDBUTTON_X FRAME_X
+      #define REDBUTTON_Y FRAME_Y
+      #define REDBUTTON_W (FRAME_W/2)
+      #define REDBUTTON_H FRAME_H
+    
+      // Green zone size
+      #define GREENBUTTON_X (REDBUTTON_X + REDBUTTON_W)
+      #define GREENBUTTON_Y FRAME_Y
+      #define GREENBUTTON_W (FRAME_W/2)
+      #define GREENBUTTON_H FRAME_H
+    
+      #define STATUSBAR_COLOR 0x4A49
+    
+      #define KIT_LED_BUILTIN 13
+    #endif //end t display pro
+
   #endif
   //// END DISPLAY DEFINITIONS
 
@@ -941,6 +1050,26 @@
     #define ICON_H 22
     #define BUTTON_PADDING 60
   #endif
+
+  #ifdef MARAUDER_TDISPLAY_S3_PRO
+    #define BANNER_TIME 100
+    
+    #define COMMAND_PREFIX "!"
+    
+    // Keypad start position, key sizes and spacing
+    #define KEY_X 120 // Centre of key //ALL VALUES UNCHANGED, TODO: CHANGE THEM
+    #define KEY_Y 50
+    #define KEY_W 240 // Width and height
+    #define KEY_H 22
+    #define KEY_SPACING_X 0 // X and Y gap
+    #define KEY_SPACING_Y 1
+    #define KEY_TEXTSIZE 1   // Font size multiplier
+    #define ICON_W 22
+    #define ICON_H 22
+    #define BUTTON_PADDING 22
+    //#define BUTTON_ARRAY_LEN 5
+  #endif
+
   //// END MENU DEFINITIONS
 
   //// SD DEFINITIONS
@@ -992,6 +1121,10 @@
 
     #ifdef XIAO_ESP32_S3
       #define SD_CS 3
+    #endif
+
+    #ifdef MARAUDER_TDISPLAY_S3_PRO //added def
+      #define SD_CS 14
     #endif
 
   #endif
@@ -1049,6 +1182,8 @@
     #define MEM_LOWER_LIM 20000
   #elif defined(XIAO_ESP32_S3)
     #define MEM_LOWER_LIM 20000
+  #elif defined(MARAUDER_TDISPLAY_S3_PRO)
+    #define MEM_LOWER_LIM 20000
   #endif
   //// END MEMORY LOWER LIMIT STUFF
 
@@ -1092,6 +1227,8 @@
   #elif defined(MARAUDER_DEV_BOARD_PRO)
     #define MAX_HTML_SIZE 20000
   #elif defined(XIAO_ESP32_S3)
+    #define MAX_HTML_SIZE 20000
+  #elif defined(MARAUDER_TDISPLAY_S3_PRO)
     #define MAX_HTML_SIZE 20000
   #else
     #define MAX_HTML_SIZE 20000
@@ -1189,6 +1326,9 @@
       #define I2C_SCL 16
     #endif
 
+    #ifdef MARAUDER_TDISPLAY_S3_PRO
+      #define I2C_SDA 5
+      #define I2C_SCL 6
   #endif
 
   //// MARAUDER TITLE STUFF
@@ -1203,6 +1343,8 @@
   #elif defined(MARAUDER_V7)
     #define MARAUDER_TITLE_BYTES 13578
   #elif defined(MARAUDER_REV_FEATHER)
+    #define MARAUDER_TITLE_BYTES 13578
+  #elif defined(MARAUDER_TDISPLAY_S3_PRO)
     #define MARAUDER_TITLE_BYTES 13578
   #else
     #define MARAUDER_TITLE_BYTES 13578
