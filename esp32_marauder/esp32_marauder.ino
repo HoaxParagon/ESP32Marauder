@@ -129,7 +129,7 @@ void backlightOn() {
     #ifdef MARAUDER_MINI
       digitalWrite(TFT_BL, LOW);
     #endif
-  
+    
     #ifndef MARAUDER_MINI
       digitalWrite(TFT_BL, HIGH);
     #endif
@@ -141,8 +141,12 @@ void backlightOff() {
     #ifdef MARAUDER_MINI
       digitalWrite(TFT_BL, HIGH);
     #endif
-  
-    #ifndef MARAUDER_MINI
+
+    #ifdef MARAUDER_TDISPLAY_S3_PRO
+      digitalWrite(TFT_BL, HIGH); //TODO: test this line on the S3 Pro
+    #endif
+
+    #if not defined(MARAUDER_MINI || MARAUDER_TDISPLAY_S3_PRO)
       digitalWrite(TFT_BL, LOW);
     #endif
   #endif
