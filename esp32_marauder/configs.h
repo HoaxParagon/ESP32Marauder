@@ -257,6 +257,7 @@
     #ifdef MARAUDER_TDISPLAY_S3_PRO
       #include <XPowersLib.h>
       #include "utilities.h" //might not be required if pins are defined elsewhere
+    #endif
   #endif
   //// END POWER MANAGEMENT
 
@@ -401,7 +402,7 @@
       #define U_PULL true
       #define R_PULL false
       #define D_PULL true
-
+    #endif
   #endif
   //// END BUTTON DEFINITIONS
 
@@ -1282,9 +1283,10 @@
       #define GPS_TX 6
       #define GPS_RX 9
       #define mac_history_len 512
+    #else
+      #define mac_history_len 512
     #endif
-  #else
-    #define mac_history_len 512
+  
   #endif
   //// END GPS STUFF
 
@@ -1329,6 +1331,7 @@
     #ifdef MARAUDER_TDISPLAY_S3_PRO
       #define I2C_SDA 5
       #define I2C_SCL 6
+    #endif
   #endif
 
   //// MARAUDER TITLE STUFF
