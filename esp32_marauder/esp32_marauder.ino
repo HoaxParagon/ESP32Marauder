@@ -146,7 +146,7 @@ void backlightOff() {
       digitalWrite(TFT_BL, HIGH); //TODO: test this line on the S3 Pro
     #endif
 
-    #if not defined(MARAUDER_MINI || MARAUDER_TDISPLAY_S3_PRO)
+    #if (!defined(MARAUDER_MINI) || !defined(MARAUDER_TDISPLAY_S3_PRO))
       digitalWrite(TFT_BL, LOW);
     #endif
   #endif
