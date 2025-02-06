@@ -1288,6 +1288,10 @@
     #endif
   
   #endif
+  
+  #ifndef HAS_GPS
+    #define mac_history_len 512 //seems required for compilation
+  #endif
   //// END GPS STUFF
 
   //// BATTERY STUFF
