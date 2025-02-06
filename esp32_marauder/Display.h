@@ -14,7 +14,11 @@
 #include <SPI.h>
 #include <lvgl.h>
 #include <Ticker.h>
-#include "SPIFFS.h"
+
+#ifndef SPIFFS
+  #include "SPIFFS.h"
+#endif
+
 #include "Assets.h"
 
 #include <TFT_eSPI.h>
