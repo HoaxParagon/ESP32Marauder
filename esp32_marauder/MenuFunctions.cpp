@@ -1071,15 +1071,15 @@ void MenuFunctions::updateStatusBar()
   #endif
   
   uint16_t the_color; 
-
-  if (this->old_gps_sat_count != gps_obj.getNumSats()) {
-    this->old_gps_sat_count = gps_obj.getNumSats();
-    display_obj.tft.fillRect(0, 0, 240, STATUS_BAR_WIDTH, STATUSBAR_COLOR);
-    status_changed = true;
-  }
-
   // GPS Stuff
   #ifdef HAS_GPS
+    if (this->old_gps_sat_count != gps_obj.getNumSats()) {
+      this->old_gps_sat_count = gps_obj.getNumSats();
+      display_obj.tft.fillRect(0, 0, 240, STATUS_BAR_WIDTH, STATUSBAR_COLOR);
+      status_changed = true;
+    }
+
+
     if (gps_obj.getGpsModuleStatus()) {
       if (gps_obj.getFixStatus())
         the_color = TFT_GREEN;
@@ -1509,9 +1509,11 @@ void MenuFunctions::RunSetup()
   this->addNodes(&wifiMenu, text_table1[31], TFT_YELLOW, NULL, SNIFFERS, [this]() {
     this->changeMenu(&wifiSnifferMenu);
   });
-  this->addNodes(&wifiMenu, "Wardriving", TFT_GREEN, NULL, BEACON_SNIFF, [this]() {
-    this->changeMenu(&wardrivingMenu);
-  });
+  #ifdef HAS_GPS
+    this->addNodes(&wifiMenu, "Wardriving", TFT_GREEN, NULL, BEACON_SNIFF, [this]() {
+      this->changeMenu(&wardrivingMenu);
+    });
+  #endif
   this->addNodes(&wifiMenu, text_table1[32], TFT_RED, NULL, ATTACKS, [this]() {
     this->changeMenu(&wifiAttackMenu);
   });
@@ -1588,12 +1590,13 @@ void MenuFunctions::RunSetup()
     });
   #endif
 
-  // Build Wardriving menu
-  wardrivingMenu.parentMenu = &wifiMenu; // Main Menu is second menu parent
-  this->addNodes(&wardrivingMenu, text09, TFT_LIGHTGREY, NULL, 0, [this]() {
-    this->changeMenu(wardrivingMenu.parentMenu);
-  });
   #ifdef HAS_GPS
+  // Build Wardriving menu
+    wardrivingMenu.parentMenu = &wifiMenu; // Main Menu is second menu parent
+    this->addNodes(&wardrivingMenu, text09, TFT_LIGHTGREY, NULL, 0, [this]() {
+      this->changeMenu(wardrivingMenu.parentMenu);
+    });
+  
     if (gps_obj.getGpsModuleStatus()) {
       this->addNodes(&wardrivingMenu, "Wardrive", TFT_GREEN, NULL, BEACON_SNIFF, [this]() {
         display_obj.clearScreen();
@@ -1601,8 +1604,7 @@ void MenuFunctions::RunSetup()
         wifi_scan_obj.StartScan(WIFI_SCAN_WAR_DRIVE, TFT_GREEN);
       });
     }
-  #endif
-  #ifdef HAS_GPS
+
     if (gps_obj.getGpsModuleStatus()) {
       this->addNodes(&wardrivingMenu, "Station Wardrive", TFT_ORANGE, NULL, PROBE_SNIFF, [this]() {
         display_obj.clearScreen();
@@ -1763,6 +1765,14 @@ void MenuFunctions::RunSetup()
       });
     #endif
 
+    // added this line
+    #if (defined(GENERIC_ESP32) || defined(MARAUDER_MINI))
+      miniKbMenu.parentMenu = &wifiGeneralMenu;
+      this->addNodes(&miniKbMenu, "a", TFT_CYAN, NULL, 0, [this]() {
+        this->changeMenu(miniKbMenu.parentMenu);
+      });
+    #endif
+    
     htmlMenu.parentMenu = &wifiGeneralMenu;
     this->addNodes(&htmlMenu, text09, TFT_LIGHTGREY, NULL, 0, [this]() {
       this->changeMenu(htmlMenu.parentMenu);
@@ -2577,7 +2587,7 @@ void MenuFunctions::showMenuList(Menu * menu, int layer)
 
 
 // Function to add MenuNodes to a menu
-void MenuFunctions::addNodes(Menu * menu, String name, uint16_t color, Menu * child, int place, std::function<void()> callable, bool selected, String command)
+void MenuFunctions::addNodes(Menu* menu, String name, uint16_t color, Menu * child, int place, std::function<void()> callable, bool selected, String command)
 {
   TFT_eSPI_Button new_button;
   menu->list->add(MenuNode{name, false, color, place, &new_button, selected, callable});
