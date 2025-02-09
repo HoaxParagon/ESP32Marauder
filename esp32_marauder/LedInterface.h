@@ -17,7 +17,7 @@
 #define MODE_CUSTOM 4
 
 extern Settings settings_obj;
-extern Adafruit_NeoPixel strip;
+//extern Adafruit_NeoPixel strip;
 
 class LedInterface {
 
