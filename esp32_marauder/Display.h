@@ -7,14 +7,20 @@
 
 #ifdef HAS_SCREEN
 
-#include <FS.h>
+#ifndef LittleFS
+  #include <FS.h>
+#endif
+
 #include <functional>
-#include <JPEGDecoder.h>
+#include <JPEGDecoder.h> //changed location trying to solve compilation issue
 #include <LinkedList.h>
 #include <SPI.h>
 #include <lvgl.h>
 #include <Ticker.h>
-#include "SPIFFS.h"
+#ifndef SPIFFS
+  #include "SPIFFS.h"
+#endif
+//#include <JPEGDecoder.h>
 #include "Assets.h"
 
 #include <TFT_eSPI.h>
