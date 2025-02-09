@@ -19,10 +19,11 @@
     
 [![Build and Push](https://github.com/justcallmekoko/ESP32Marauder/actions/workflows/build_push.yml/badge.svg)](https://github.com/justcallmekoko/ESP32Marauder/actions/workflows/build_push.yml)
 
-## Getting Started
+## Getting Started  
+VERY IMPORTANT, follow along with the directions exactly or this won't compile. The program is held together by a hope and a prayer.  
 Download the [latest release](https://github.com/justcallmekoko/ESP32Marauder/releases/latest) of the firmware.  
 
 Check out the project [wiki](https://github.com/justcallmekoko/ESP32Marauder/wiki) for a full overview of the ESP32 Marauder
 
 # For Sale Now
-You can buy the ESP32 Marauder using [this link](https://www.tindie.com/products/justcallmekoko/esp32-marauder/)
+You can buy the ESP32 Marauder using [this link](https://www.justcallmekokollc.com)
