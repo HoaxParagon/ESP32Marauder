@@ -21,6 +21,9 @@
 
 ## Getting Started  
 VERY IMPORTANT, follow along with the directions exactly or this won't compile. The program is held together by a hope and a prayer.  
+you'll need to select the t-display s3 board under boards.  
+Not everything works right now, but I am working on it.  
+
 Download the [latest release](https://github.com/justcallmekoko/ESP32Marauder/releases/latest) of the firmware.  
 
 Check out the project [wiki](https://github.com/justcallmekoko/ESP32Marauder/wiki) for a full overview of the ESP32 Marauder
