@@ -5,7 +5,10 @@
 
 #include "configs.h"
 
-#include "SPIFFS.h"
+#ifndef SPIFFS
+  #include "SPIFFS.h"
+#endif
+
 #include <FS.h>
 #include <ArduinoJson.h>
 
