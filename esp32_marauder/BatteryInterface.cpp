@@ -1,5 +1,9 @@
 #include "BatteryInterface.h"
 #include "lang_var.h"
+//#include <XPowersLib.h> // added this for battery management
+
+static PowersSY6970 PMU;
+
 BatteryInterface::BatteryInterface() {
   
 }
@@ -26,29 +30,39 @@ void BatteryInterface::RunSetup() {
 
   #ifdef HAS_BATTERY
 
-    Wire.begin(I2C_SDA, I2C_SCL);
-
+    //Wire.begin(I2C_SDA, I2C_SCL);
+    //init pmu
+    PMU.init(Wire, I2C_SDA, I2C_SCL, SY6970_ADDR);
     Serial.println("Checking for battery monitors...");
 
-    Wire.beginTransmission(IP5306_ADDR);
+    //Wire.beginTransmission(IP5306_ADDR);
+    Wire.beginTransmission(SY6970_ADDR);
     error = Wire.endTransmission();
-
+    PMU.enableADCMeasure();
+    PMU.enableCharge();
+    //if (error == 0) {
+    //  Serial.println("Detected IP5306");
+    //  this->has_ip5306 = true;
+    //  this->i2c_supported = true;
+    //}
+    
     if (error == 0) {
-      Serial.println("Detected IP5306");
-      this->has_ip5306 = true;
+      Serial.println("Detected SY6970");
+      //this->has_ip5306 = true;
+      this->has_sy6970 = true;
       this->i2c_supported = true;
     }
+    
+    //Wire.beginTransmission(MAX17048_ADDR);
+    //error = Wire.endTransmission();
 
-    Wire.beginTransmission(MAX17048_ADDR);
-    error = Wire.endTransmission();
-
-    if (error == 0) {
-      if (maxlipo.begin()) {
-        Serial.println("Detected MAX17048");
-        this->has_max17048 = true;
-        this->i2c_supported = true;
-      }
-    }
+    //if (error == 0) {
+    //  if (maxlipo.begin()) {
+    //    Serial.println("Detected MAX17048");
+    //    this->has_max17048 = true;
+    //    this->i2c_supported = true;
+    //  }
+    //}
 
     /*for(addr = 1; addr < 127; addr++ ) {
       Wire.beginTransmission(addr);
@@ -88,25 +102,33 @@ void BatteryInterface::RunSetup() {
   #endif
 }
 
+
+
+
 int8_t BatteryInterface::getBatteryLevel() {
 
-  if (this->has_ip5306) {
-    Wire.beginTransmission(IP5306_ADDR);
-    Wire.write(0x78);
-    if (Wire.endTransmission(false) == 0 &&
-        Wire.requestFrom(IP5306_ADDR, 1)) {
-      this->i2c_supported = true;
-      switch (Wire.read() & 0xF0) {
-        case 0xE0: return 25;
-        case 0xC0: return 50;
-        case 0x80: return 75;
-        case 0x00: return 100;
-        default: return 0;
-      }
+  //if (this->has_ip5306) {
+  if (this->has_sy6970) {
+    //Wire.beginTransmission(IP5306_ADDR);
+    //Wire.beginTransmission(SY6970_ADDR);
+    //Wire.write(0x78);
+    
+    //if (Wire.endTransmission(false) == 0 &&
+    //    //Wire.requestFrom(IP5306_ADDR, 1)) {
+    //    Wire.requestFrom(SY6970_ADDR, 1)) {
+    //  this->i2c_supported = true;
+    //  switch (Wire.read() & 0xF0) {
+    //    case 0xE0: return 25;
+    //    case 0xC0: return 50;
+    //    case 0x80: return 75;
+    //    case 0x00: return 100;
+    //    default: return 0;
+      return PMU.getVbusVoltage();
+      //}
     }
-    this->i2c_supported = false;
+    //this->i2c_supported = false;
     return -1;
-  }
+  //}
 
 
   if (this->has_max17048) {
